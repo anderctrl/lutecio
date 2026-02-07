@@ -4,16 +4,18 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     cmake \
     g++ \
     make \
-    wget \
+    git \
     ca-certificates \
     libssl-dev \
     zlib1g-dev \
     libopus-dev \
     && rm -rf /var/lib/apt/lists/*
 
-RUN wget https://github.com/brainboxdotcc/DPP/releases/download/v10.1.4/libdpp-10.1.4-linux-x64.deb -O dpp.deb \
-    && dpkg -i dpp.deb \
-    && rm dpp.deb
+RUN git clone --depth 1 --branch v10.1.4 https://github.com/brainboxdotcc/DPP.git /tmp/dpp \
+    && cmake -S /tmp/dpp -B /tmp/dpp/build -DCMAKE_BUILD_TYPE=Release \
+    && cmake --build /tmp/dpp/build -j$(nproc) \
+    && cmake --install /tmp/dpp/build \
+    && rm -rf /tmp/dpp
 
 WORKDIR /app
 COPY . .
