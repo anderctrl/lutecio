@@ -15,4 +15,4 @@ cmds = [
 ]
 
 [phases.start]
-cmd = "./build/bot"
+cmd = "./build/lutecio"
