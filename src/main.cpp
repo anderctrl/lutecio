@@ -1,5 +1,9 @@
+#include "commands/ping_command.hpp"
+#include "registries/command_registry.h"
+#include <cstdio>
 #include <cstdlib>
 #include <dpp/dpp.h>
+#include <memory>
 
 int main()
 {
@@ -9,29 +13,22 @@ int main()
         throw std::runtime_error("DISCORD_TOKEN not set");
     }
 
-    dpp::cluster bot(BOT_TOKEN);
+    dpp::cluster bot(BOT_TOKEN, dpp::i_default_intents);
 
-    bot.on_log(dpp::utility::cout_logger());
+    bot.on_log([](const dpp::log_t &log) { std::cout << "[" << log.severity << "] " << log.message << std::endl; });
+
+    CommandRegistry::instance().add(std::make_unique<PingCommand>());
 
     bot.on_slashcommand([&bot](const dpp::slashcommand_t &event) {
-        if (event.command.get_command_name() == "ping")
-        {
-            uint32_t shard = event.from()->shard_id;
-            uint64_t ping = bot.get_shard(shard)->websocket_ping;
+        printf("Command received: %s\n", event.command.get_command_name().c_str());
 
-            std::string replystr = "Pong!\n"
-                                   "Gateway ping: **" +
-                                   std::to_string(ping) + " ms**";
-
-            event.reply(replystr);
-        }
+        CommandRegistry::instance().handle(event);
     });
 
     bot.on_ready([&bot](const dpp::ready_t &event) {
         if (dpp::run_once<struct register_bot_commands>())
         {
-            // bot.global_command_create(dpp::slashcommand("ping", "Ping pong!", bot.me.id));
-            bot.guild_command_create(dpp::slashcommand("ping", "Ping pong!", bot.me.id), 954334832228442132);
+            CommandRegistry::instance().register_all(bot);
         }
     });
 

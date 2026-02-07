@@ -7,8 +7,14 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(OpenSSL REQUIRED)
 find_package(dpp CONFIG REQUIRED)
 
-add_executable(${PROJECT_NAME}
-    src/main.cpp
+file(GLOB_RECURSE SRCS CONFIGURE_DEPENDS
+    ${CMAKE_SOURCE_DIR}/src/*.cpp
+)
+
+add_executable(${PROJECT_NAME} ${SRCS})
+
+target_include_directories(${PROJECT_NAME} PRIVATE
+    ${CMAKE_SOURCE_DIR}/src
 )
 
 add_definitions(-DDPP_STATIC)
