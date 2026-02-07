@@ -1,0 +1,30 @@
+# Build
+.zed/
+.cache/
+.vscode/
+.clangd/
+.clang-tidy/
+.clang-format-cache/
+build/
+build-*/
+cmake-build-*/
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+compile_commands.json
+
+# Nix
+.result
+result/
+.nixpacks/
+.nix-cache/
+
+# Runtime
+*.log
+.env
+.env.*
+
+# OS
+.DS_Store
+Thumbs.db

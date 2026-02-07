@@ -1,0 +1,18 @@
+[phases.setup]
+nixPkgs = [
+  "cmake",
+  "gcc",
+  "pkg-config",
+  "openssl",
+  "zlib",
+  "dpp"
+]
+
+[phases.build]
+cmds = [
+  "cmake -B build -S .",
+  "cmake --build build"
+]
+
+[phases.start]
+cmd = "./build/bot"
