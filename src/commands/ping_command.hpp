@@ -14,7 +14,7 @@ class PingCommand : public ICommand
 inline void PingCommand::register_command(dpp::cluster &bot)
 {
     this->bot = &bot;
-    //bot.global_command_create(dpp::slashcommand("ping", "Shows websocket ping", bot.me.id));
+    // bot.global_command_create(dpp::slashcommand("ping", "Shows websocket ping", bot.me.id));
     bot.guild_command_create(dpp::slashcommand("ping", "Shows websocket ping", bot.me.id), 954334832228442132);
 }
 
@@ -24,7 +24,9 @@ inline void PingCommand::handle(const dpp::slashcommand_t &event)
 
     if (auto client = bot->get_shard(shard))
     {
-        uint64_t ping_ms = static_cast<uint64_t>(client->websocket_ping * 1000.0);
+        double ping_seconds = client->websocket_ping;
+
+        uint64_t ping_ms = static_cast<uint64_t>(ping_seconds * 1000.0);
 
         std::string replystr = "Pong!\n"
                                "Gateway ping: **" +
